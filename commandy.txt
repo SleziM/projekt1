@@ -1,0 +1,40 @@
+curl -O https://raw.githubusercontent.com/ENGETO-Academy/Linux-public/main/files/pwlist.csv
+
+tr -d \'\r\' < pwlist.csv > pwlist_linux.csv
+
+file pwlist_linux.csv
+
+head -n 10 pwlist_linux.csv | tee puvodni_pwlist.txt
+
+cut -d, -f1 pwlist_linux.csv | sort | uniq -c | tee pocetvzorku.txt
+
+awk \'$1 >= 50 {print $2}\' pocetvzorku.txt | tee generator.txt
+
+grep -f generator.txt pwlist_linux.csv | tee filtrpw.csv
+
+cut -d, -f2- filtrpw.csv | grep -E \'^.{8,}$\' | tee mindelka.csv
+
+grep -E \',.*[a-z]\' filtrpw.csv | tee malap.csv
+
+grep -E \',.*[A-Z]\' filtrpw.csv | tee velkap.csv
+
+grep -E \',.*[0-9]\' filtrpw.csv | tee cisla.csv
+
+grep -E \',.*[^a-zA-Z0-9]\' filtrpw.csv | tee specialni.csv
+
+cut -d, -f2- filtrpw.csv | cut -c1-3 | sort | uniq -d | tee unizacatek.txt
+  grep -v -F -f unizacatek.txt filtrpw.csv | tee unizacatek.csv
+
+cut -d, -f2- filtrpw.csv | rev | cut -c1-3 | rev | sort | uniq -d | tee unikonec.txt
+  grep -v -F -f unikonec.txt filtrpw.csv | tee unikonec.csv
+
+cut -d, -f1 filtrpw.csv | sort | uniq -c | tee finalnipocet.txt
+
+touch skript.sh
+
+vim skript.sh
+
+chmod +x skript.sh
+./skript.sh'
+
+
